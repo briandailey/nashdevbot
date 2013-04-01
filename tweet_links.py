@@ -1,9 +1,7 @@
 
 """
-url.py - Willie URL title module
-Copyright 2010-2011, Michael Yanovich, yanovich.net, Kenneth Sham
-Copyright 2012 Edward Powell
-Licensed under the Eiffel Forum License 2.
+tweet_links.py - Willie auto-tweet links module.s
+cribs urls.py and twit.py heavily. ymmv.
 
 http://willie.dftba.net
 """
