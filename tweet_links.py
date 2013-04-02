@@ -194,7 +194,7 @@ def tweet(willie, trigger, message):
     update = message + " ^" + trigger.nick
     if len(update) <= 140:
         api.update_status(update)
-        willie.reply("@nashdevbot: %s" % update)
+        willie.say(update)
     else:
         toofar = len(update) - 140
         willie.reply("Couldn't tweet, too long by : " + str(toofar) + " characters.")
