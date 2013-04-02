@@ -174,9 +174,6 @@ def show_title_auto (willie, trigger):
         if k > 3: break
         k += 1
 
-        if r[0] is None:
-            continue
-        else: r[1] = getTLD(r[1])
         message = '%s %s' % (r[0], r[1])
         if message != trigger:
             tweet(willie, trigger, message)
