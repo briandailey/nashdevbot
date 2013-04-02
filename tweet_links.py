@@ -161,6 +161,8 @@ def get_results(willie, text):
     return display
 
 def show_title_auto (willie, trigger):
+    if trigger.nick in willie.config.core.nick_blocks:
+        return
     if trigger.startswith('.title '):
         return
     if len(re.findall("\([\d]+\sfiles\sin\s[\d]+\sdirs\)", trigger)) == 1: return
