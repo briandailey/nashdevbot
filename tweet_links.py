@@ -21,7 +21,7 @@ exclusion_char = '!'
 
 def configure(config):
     """
-    
+
     | [url] | example | purpose |
     | ---- | ------- | ------- |
     | exclude | https?://git\.io/.* | A list of regular expressions for URLs for which the title should not be shown. |
@@ -41,7 +41,7 @@ def configure(config):
         config.interactive_add('twitter', 'access_token', 'Access token')
         config.interactive_add('twitter', 'access_token_secret', 'Access token secret')
 
-    
+
 def setup(willie):
     global url_finder, exclusion_char
     if willie.config.has_option('url', 'exclude'):
@@ -49,17 +49,17 @@ def setup(willie):
                    willie.config.url.get_list(exclude)]
     else:
         regexes = []
-    
+
     if not willie.memory.contains('url_exclude'):
         willie.memory['url_exclude'] = regexes
     else:
         exclude = willie.memory['url_exclude']
         if regexes: exclude.append(regexes)
         willie.memory['url_exclude'] = exclude
-    
+
     if willie.config.has_option('url', 'exclusion_char'):
         exclusion_char = willie.config.url.exclusion_char
-    
+
     url_finder = re.compile(r'(?u)(%s?(http|https|ftp)(://\S+))' %
         (exclusion_char))
     # We want the exclusion list to be pre-compiled, since url parsing gets
