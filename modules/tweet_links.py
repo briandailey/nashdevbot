@@ -20,7 +20,7 @@ url_finder = None
 r_entity = re.compile(r'&[A-Za-z0-9#]+;')
 INVALID_WEBSITE = 0x01
 exclusion_char = '!'
-shortened_link_length = 20
+shortened_link_length = 23
 
 def configure(config):
     """
@@ -156,10 +156,13 @@ def get_results(willie, text):
         url = uni_encode(match)
         url = uni_decode(url)
         url = iriToUri(url)
-        try:
-            page_title = find_title(url)
-        except:
-            page_title = None # if it can't access the site fail silently
+        if '--' in text:
+            page_title = text[text.find('--')+2:].strip()
+        else:
+            try:
+                page_title = find_title(url)
+            except:
+                page_title = 'No title' # if it can't access the site fail silently
         display.append([page_title, url])
     return display
 
@@ -191,15 +194,19 @@ def tweet(willie, trigger, title, url):
     api = tweepy.API(auth)
 
     # truncate the title to a length we can post alongside url and nick.
-    truncate_title_to = 140 - (shortened_link_length + len(trigger.nick) + 2)
+    truncate_title_to = 140 - (shortened_link_length + len(str(trigger.nick)) + 5)
+    if len(title) > truncate_title_to:
+        print "Truncating title to %s chars." % truncate_title_to
+        title = title[:truncate_title_to] + '...'
+
     update = u'{title} {url} ^{nick}'.format(
-        title=title[:truncate_title_to],
+        title=title,
         url=url,
         nick=unicode(trigger.nick))
 
     try:
         api.update_status(update)
-        willie.reply("tweeted [ %s ] to @nashdevbot." % title)
+        willie.reply("tweeted \"%s\" to @nashdevbot." % title)
     except TweepError, e:
         try:
             # try to get the actual error message.
