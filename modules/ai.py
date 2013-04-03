@@ -86,17 +86,6 @@ love3.rule = '(?i)(willie|$nickname)\,\si.*love.*'
 love3.rate = 30
 
 
-def f_lol(willie, trigger):
-    randnum = random.random()
-    if 0 < randnum < limit:
-        respond = ['haha', 'lol', 'rofl']
-        randtime = random.uniform(0, 9)
-        time.sleep(randtime)
-        willie.say(random.choice(respond))
-f_lol.rule = '(haha!?|lol!?)$'
-f_lol.priority = 'high'
-
-
 def f_bye(willie, trigger):
     respond = ['bye!', 'bye', 'see ya', 'see ya!']
     willie.say(random.choice(respond))
