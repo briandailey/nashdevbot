@@ -192,14 +192,14 @@ def tweet(willie, trigger, title, url):
 
     # truncate the title to a length we can post alongside url and nick.
     truncate_title_to = 140 - (shortened_link_length + len(trigger.nick) + 2)
-    update = "{title} {url} ^{nick}".format(
+    update = u'{title} {url} ^{nick}'.format(
         title=title[:truncate_title_to],
         url=url,
-        nick=trigger.nick)
+        nick=unicode(trigger.nick))
 
     try:
         api.update_status(update)
-        willie.reply("tweeted to @nashdevbot.")
+        willie.reply("tweeted [ %s ] to @nashdevbot." % title)
     except TweepError, e:
         try:
             # try to get the actual error message.
