@@ -152,29 +152,6 @@ def get_results(willie, text):
         display.append([page_title, url])
     return display
 
-def show_title_auto (willie, trigger):
-    if trigger.startswith('.title '):
-        return
-    if len(re.findall("\([\d]+\sfiles\sin\s[\d]+\sdirs\)", trigger)) == 1: return
-    try:
-        results = get_results(willie, trigger)
-    except Exception as e: raise e
-    if results is None: return
-
-    k = 1
-    for r in results:
-        if k > 3: break
-        k += 1
-
-        if r[0] is None:
-            continue
-        else: r[1] = getTLD(r[1])
-        message = '[ %s ] - %s' % (r[0], r[1])
-        if message != trigger:
-            willie.say(message)
-show_title_auto.rule = '(?u).*((http|https)(://\S+)).*'
-show_title_auto.priority = 'high'
-
 def show_title_demand (willie, trigger):
     """Show the title of a URL"""
     #try:
