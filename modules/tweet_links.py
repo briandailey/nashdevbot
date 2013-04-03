@@ -160,7 +160,7 @@ def get_results(willie, text):
         display.append([page_title, url])
     return display
 
-def show_title_auto (willie, trigger):
+def tweet_links_auto(willie, trigger):
     if trigger.nick in willie.config.core.nick_blocks:
         return
     if trigger.startswith('.title ') or trigger.startswith('.tweet'):
@@ -179,9 +179,10 @@ def show_title_auto (willie, trigger):
         message = '%s %s' % (r[0], r[1])
         if message != trigger:
             tweet(willie, trigger, message)
-show_title_auto.rule = '(?u).*((http|https)(://\S+)).*'
-show_title_auto.priority = 'high'
-show_title_auto.rate = 10
+tweet_links_auto.rule = '(?u).*((http|https)(://\S+)).*'
+tweet_links_auto.priority = 'high'
+# rate limit to a link posted by a user N seconds.
+tweet_links_auto.rate = 20
 
 def tweet(willie, trigger, message):
     """Tweet with Willie's account. Admin-only."""
