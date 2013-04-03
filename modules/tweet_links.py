@@ -12,12 +12,15 @@ import willie.web as web
 import unicodedata
 import urlparse
 import tweepy
+from tweepy.error import TweepError
 import time
+import ast
 
 url_finder = None
 r_entity = re.compile(r'&[A-Za-z0-9#]+;')
 INVALID_WEBSITE = 0x01
 exclusion_char = '!'
+shortened_link_length = 20
 
 def configure(config):
     """
@@ -176,30 +179,34 @@ def tweet_links_auto(willie, trigger):
         if k > 3: break
         k += 1
 
-        message = '%s %s' % (r[0], r[1])
-        if message != trigger:
-            tweet(willie, trigger, message)
+        tweet(willie, trigger, r[0], r[1])
 tweet_links_auto.rule = '(?u).*((http|https)(://\S+)).*'
 tweet_links_auto.priority = 'high'
 # rate limit to a link posted by a user N seconds.
 tweet_links_auto.rate = 20
 
-def tweet(willie, trigger, message):
-    """Tweet with Willie's account. Admin-only."""
+def tweet(willie, trigger, title, url):
     auth = tweepy.OAuthHandler(willie.config.twitter.consumer_key, willie.config.twitter.consumer_secret)
     auth.set_access_token(willie.config.twitter.access_token, willie.config.twitter.access_token_secret)
     api = tweepy.API(auth)
 
-    print api.me().name
+    # truncate the title to a length we can post alongside url and nick.
+    truncate_title_to = 140 - (shortened_link_length + len(trigger.nick) + 2)
+    update = "{title} {url} ^{nick}".format(
+        title=title[:truncate_title_to],
+        url=url,
+        nick=trigger.nick)
 
-    update = message + " ^" + trigger.nick
-    if len(update) <= 140:
+    try:
         api.update_status(update)
-        willie.say(update)
-    else:
-        toofar = len(update) - 140
-        willie.reply("Couldn't tweet, too long by : " + str(toofar) + " characters.")
-
+        willie.reply("tweeted to @nashdevbot.")
+    except TweepError, e:
+        try:
+            # try to get the actual error message.
+            reason = ast.literal_eval(e.reason)
+            willie.reply("oops - %s" % reason[0]['message'])
+        except:
+            willie.reply("oops, failed to tweet. Response: %s" % e)
 
 
 #Tools formerly in unicode.py
