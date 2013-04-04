@@ -107,6 +107,3 @@ wb.rule = '^(wb|welcome\sback).*$nickname\s'
 
 if __name__ == '__main__':
     print __doc__.strip()
-
-if __name__ == '__main__':
-    print __doc__.strip()
