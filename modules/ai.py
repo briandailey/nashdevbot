@@ -93,17 +93,6 @@ f_bye.rule = '(g2g!?|bye!?)$'
 f_bye.priority = 'high'
 
 
-def f_heh(willie, trigger):
-    randnum = random.random()
-    if 0 < randnum < limit:
-        respond = ['hm']
-        randtime = random.uniform(0, 7)
-        time.sleep(randtime)
-        willie.say(random.choice(respond))
-f_heh.rule = '(heh!?)$'
-f_heh.priority = 'high'
-
-
 def f_really(willie, trigger):
     randtime = random.uniform(10, 45)
     time.sleep(randtime)
