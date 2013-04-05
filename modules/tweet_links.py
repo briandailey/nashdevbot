@@ -96,7 +96,7 @@ def find_title(url):
     content = content.strip('\n').rstrip().lstrip()
     title = content
 
-    if len(title) > 200:
+    if title and len(title) > 200:
         title = title[:200] + '[...]'
 
     def e(m):
@@ -195,9 +195,11 @@ def tweet(willie, trigger, title, url):
 
     # truncate the title to a length we can post alongside url and nick.
     truncate_title_to = 140 - (shortened_link_length + len(str(trigger.nick)) + 5)
-    if len(title) > truncate_title_to:
+    if title and len(title) > truncate_title_to:
         print "Truncating title to %s chars." % truncate_title_to
         title = title[:truncate_title_to] + '...'
+    elif not title:
+        title = "No title"
 
     update = u'{title} {url} ^{nick}'.format(
         title=title,
