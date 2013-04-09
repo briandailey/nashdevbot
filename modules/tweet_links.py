@@ -189,27 +189,28 @@ tweet_links_auto.priority = 'high'
 # rate limit to a link posted by a user N seconds.
 tweet_links_auto.rate = 20
 
-def tweet(willie, trigger, title, url):
+def tweet(willie, trigger, message, url):
     auth = tweepy.OAuthHandler(willie.config.twitter.consumer_key, willie.config.twitter.consumer_secret)
     auth.set_access_token(willie.config.twitter.access_token, willie.config.twitter.access_token_secret)
     api = tweepy.API(auth)
 
-    # truncate the title to a length we can post alongside url and nick.
-    truncate_title_to = 140 - (shortened_link_length + len(str(trigger.nick)) + 5)
-    if title and len(title) > truncate_title_to:
-        print "Truncating title to %s chars." % truncate_title_to
-        title = title[:truncate_title_to] + '...'
-    elif not title:
-        title = "No title"
+    # truncate the message to a length we can post alongside url and nick.
+    truncate_message_to = 140 - (shortened_link_length + len(' ' + unicode(trigger.nick) + ' ' + unicode(trigger.sender)))
+    if message and len(message) > truncate_message_to:
+        print "Truncating message to %s chars." % truncate_message_to
+        message = message[:truncate_message_to] + '...'
+    elif not message:
+        message = "No title"
 
-    update = u'{title} {url} ^{nick}'.format(
-        title=title,
+    update = u'{message} {url} ^{nick} {channel}'.format(
+        message=message,
         url=url,
-        nick=unicode(trigger.nick))
+        nick=unicode(trigger.nick),
+        channel=unicode(trigger.sender))
 
     try:
         api.update_status(update)
-        willie.reply("tweeted \"%s\" to @nashdevbot." % title)
+        willie.reply("tweeted \"%s\" to @nashdevbot." % message)
     except TweepError, e:
         try:
             # try to get the actual error message.
