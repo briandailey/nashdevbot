@@ -20,7 +20,7 @@ url_finder = None
 r_entity = re.compile(r'&[A-Za-z0-9#]+;')
 INVALID_WEBSITE = 0x01
 exclusion_char = '!'
-shortened_link_length = 23
+shortened_link_length = 30
 
 def configure(config):
     """
@@ -156,8 +156,9 @@ def get_results(willie, text):
         url = uni_encode(match)
         url = uni_decode(url)
         url = iriToUri(url)
-        if '--' in text:
-            page_title = text[text.find('--')+2:].strip()
+        if text.replace(url, ''):
+            # if more than the URL was posted, grab context.
+            page_title = text.replace(url, '').strip()
         else:
             try:
                 page_title = find_title(url)
