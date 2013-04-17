@@ -194,8 +194,10 @@ def tweet(willie, trigger, message, url):
     auth.set_access_token(willie.config.twitter.access_token, willie.config.twitter.access_token_secret)
     api = tweepy.API(auth)
 
+    nickname = '@' + get_handle(willie, trigger.nick) or unicode(trigger.nick)
+    
     # truncate the message to a length we can post alongside url and nick.
-    truncate_message_to = 140 - (shortened_link_length + len(' ' + unicode(trigger.nick) + ' ' + unicode(trigger.sender)))
+    truncate_message_to = 140 - (shortened_link_length + len(' ' + nickname + ' ' + unicode(trigger.sender)))
     if message and len(message) > truncate_message_to:
         print "Truncating message to %s chars." % truncate_message_to
         message = message[:truncate_message_to] + '...'
@@ -205,7 +207,7 @@ def tweet(willie, trigger, message, url):
     update = u'{message} {url} ^{nick} {channel}'.format(
         message=message,
         url=url,
-        nick=unicode(trigger.nick),
+        nick=unicode(nickname),
         channel=unicode(trigger.sender))
 
     try:
@@ -219,6 +221,16 @@ def tweet(willie, trigger, message, url):
         except:
             willie.reply("oops, failed to tweet. Response: %s" % e)
 
+
+def get_handle(willie, nick):
+    """
+    Find a users twitter handle by nickname saved in user preferences.
+    """
+    # check if the nickname has any saved preferences
+    if willie.db and nick in willie.db.preferences:
+        return willie.db.preferences.get(nick, 'twitter_handle')
+
+    return
 
 #Tools formerly in unicode.py
 
