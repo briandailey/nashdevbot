@@ -194,8 +194,8 @@ def tweet(willie, trigger, message, url):
     auth.set_access_token(willie.config.twitter.access_token, willie.config.twitter.access_token_secret)
     api = tweepy.API(auth)
 
-    nickname = ('@' + get_handle(willie, trigger.nick)) or unicode(trigger.nick)
-    
+    nickname = ('@' + get_handle(willie, trigger.nick)) or ('^' + unicode(trigger.nick))
+
     # truncate the message to a length we can post alongside url and nick.
     truncate_message_to = 140 - (shortened_link_length + len(' ' + nickname + ' ' + unicode(trigger.sender)))
     if message and len(message) > truncate_message_to:
@@ -204,7 +204,7 @@ def tweet(willie, trigger, message, url):
     elif not message:
         message = "No title"
 
-    update = u'{message} {url} ^{nick} {channel}'.format(
+    update = u'{message} {url} {nick} {channel}'.format(
         message=message,
         url=url,
         nick=unicode(nickname),
