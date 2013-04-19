@@ -17,7 +17,7 @@ def setup(willie):
 
 def handle(willie, trigger):
     """
-    Updates user twitter handle preference or returns a target nickname's handle.
+    Associates your IRC nick with a Twitter handle. Example: .handle @egdelwonk
     """
 
     # prevent blocked users from accessing the trigger
