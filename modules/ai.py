@@ -106,10 +106,21 @@ def wb(willie, trigger):
 wb.rule = '^(wb|welcome\sback).*$nickname\s'
 
 def ai_morning(willie, trigger):
-    responses = ["top o'the mornin' to ya!", "g'morning", 'rise and shine, code monkeys!', 'guten tag', 'buenos dias']
+    responses = [
+            "top o'the mornin' to ya!",
+            "g'morning",
+            'rise and shine, code monkeys!',
+            'guten tag',
+            'buenos dias',
+            'did you enjoy your brief foray into unconsciousness?',
+            'a glorious new day awaits!',
+        ]
     response = random.choice(responses)
-    willie.say(response)
-ai_morning.rule = '^(morning|mornin|mornin\')$'
+    # pause for a moment.
+    randtime = random.uniform(1, 15)
+    time.sleep(randtime)
+    willie.reply(response)
+ai_morning.rule = '^(morning|mornin|mornin\'|good morning|good morning!|g\'morning)$'
 ai_morning.rate = 10
 
 if __name__ == '__main__':
