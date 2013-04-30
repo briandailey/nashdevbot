@@ -34,7 +34,14 @@ def ty(willie, trigger):
     mystr = trigger.group()
     mystr = str(mystr)
     if (mystr.find(" no ") == -1) and (mystr.find("no ") == -1) and (mystr.find(" no") == -1):
-        willie.reply("You're welcome.")
+        willie.reply(random.choice((
+            'You\'re welcome', 
+            'Sure thing', 
+            'No sweat', 
+            'No problem', 
+            'As you wish',
+            'Ain\'t no thing but a chicken wing.'
+        )))
 ty.rule = '(?i).*(thank).*(you).*(willie|$nickname).*$'
 ty.priority = 'high'
 ty.rate = 30
@@ -48,7 +55,7 @@ ty2.rate = 30
 
 def ty4(willie, trigger):
     ty(willie, trigger)
-ty4.rule = '(?i).*(thanks).*(willie|$nickname).*'
+ty4.rule = '(?i).*(thanks|thx).*(willie|$nickname).*'
 ty4.rate = 40
 
 
