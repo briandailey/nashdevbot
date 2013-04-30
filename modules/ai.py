@@ -13,7 +13,14 @@ limit = 3
 
 
 def goodbye(willie, trigger):
-    byemsg = random.choice(('Bye', 'Goodbye', 'Seeya', 'Auf Wiedersehen', 'Au revoir', 'Ttyl'))
+    byemsg = random.choice((
+        'Bye', 
+        'Goodbye', 
+        'Seeya', 
+        'Auf Wiedersehen', 
+        'Au revoir', 
+        'Sayonara',
+        'Ttyl'))
     punctuation = random.choice(('!', ' '))
     willie.say(byemsg + ' ' + trigger.nick + punctuation)
 goodbye.rule = r'(?i)$nickname\:\s+(bye|goodbye|seeya|cya|ttyl|g2g|gnight|goodnight)'
@@ -112,6 +119,7 @@ def ai_morning(willie, trigger):
             'rise and shine, code monkeys!',
             'guten tag',
             'buenos dias',
+            'ohayo gozaimasu!',
             'did you enjoy your brief foray into unconsciousness?',
             'a glorious new day awaits!',
         ]
