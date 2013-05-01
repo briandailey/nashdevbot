@@ -20,7 +20,8 @@ def goodbye(willie, trigger):
         'Auf Wiedersehen', 
         'Au revoir', 
         'Sayonara',
-        'Ttyl'))
+        'Ttyl',
+    ))
     punctuation = random.choice(('!', ' '))
     willie.say(byemsg + ' ' + trigger.nick + punctuation)
 goodbye.rule = r'(?i)$nickname\:\s+(bye|goodbye|seeya|cya|ttyl|g2g|gnight|goodnight)'
@@ -40,7 +41,7 @@ def ty(willie, trigger):
             'No sweat', 
             'No problem', 
             'As you wish',
-            'Ain\'t no thing but a chicken wing.'
+            'Ain\'t no thing but a chicken wing.',
         )))
 ty.rule = '(?i).*(thank).*(you).*(willie|$nickname).*$'
 ty.priority = 'high'
@@ -135,7 +136,7 @@ def ai_morning(willie, trigger):
     randtime = random.uniform(1, 15)
     time.sleep(randtime)
     willie.reply(response)
-ai_morning.rule = '^(morning|mornin|mornin\'|good morning|good morning!|g\'morning)$'
+ai_morning.rule = '^((?:good\s|g\')?mornin(?:\'|g)?(?:\s(?:all|everyone|people|ppl))?!?)$'
 ai_morning.rate = 10
 
 if __name__ == '__main__':
