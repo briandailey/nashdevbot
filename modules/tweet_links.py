@@ -333,7 +333,7 @@ def f_optout(willie, trigger):
         return
 
     willie.db.preferences.update(nick, { 'optin_auto_tweet': '', 'optin_auto_tweet_date': str(datetime.datetime.today()) })
-    willie.say('{nick}: You have opted out, ignoring you links.'.format(nick=nick))
+    willie.say('{nick}: You have opted out, ignoring your links.'.format(nick=nick))
     return
 f_optout.commands = ['optout']
 f_optout.priority = 'medium'
