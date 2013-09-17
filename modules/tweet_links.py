@@ -183,7 +183,7 @@ def tweet_links_auto(willie, trigger):
         return
     if len(re.findall("\([\d]+\sfiles\sin\s[\d]+\sdirs\)", trigger)) == 1: return
 
-    if not checkoptin(willie, trigger):
+    if not optin_check(willie, Nick(trigger.nick)):
         return
 
     try:
