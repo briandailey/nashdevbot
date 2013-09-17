@@ -6,15 +6,16 @@ cribs urls.py and twit.py heavily. ymmv.
 http://willie.dftba.net
 """
 
-import re
-from htmlentitydefs import name2codepoint
-import willie.web as web
-import unicodedata
-import urlparse
-import tweepy
-from tweepy.error import TweepError
-import time
 import ast
+import re
+import datetime
+import tweepy
+import urlparse
+from tweepy.error import TweepError
+
+import willie.web as web
+from htmlentitydefs import name2codepoint
+from willie.tools import Nick
 
 url_finder = None
 r_entity = re.compile(r'&[A-Za-z0-9#]+;')
@@ -22,13 +23,17 @@ INVALID_WEBSITE = 0x01
 exclusion_char = '!'
 shortened_link_length = 30
 
+
 def configure(config):
     """
 
     | [url] | example | purpose |
     | ---- | ------- | ------- |
-    | exclude | https?://git\.io/.* | A list of regular expressions for URLs for which the title should not be shown. |
-    | exclusion_char | ! | A character (or string) which, when immediately preceding a URL, will stop the URL's title from being shown. |
+    | exclude | https?://git\.io/.* | A list of regular expressions
+        for URLs for which the title should not be shown. |
+    | exclusion_char | ! | A character (or string) which,
+        when immediately preceding a URL, will stop the URL's title from being
+        shown. |
     """
     if config.option('Exclude certain URLs from automatic title display', False):
         if not config.has_section('url'):
@@ -67,6 +72,10 @@ def setup(willie):
         (exclusion_char))
     # We want the exclusion list to be pre-compiled, since url parsing gets
     # called a /lot/, and it's annoying when it's laggy.
+
+    if willie.db and not willie.db.preferences.has_columns('optin_auto_tweet'):
+        # add a twitter_handle column if does not exists on preferences table
+        willie.db.preferences.add_columns(['optin_auto_tweet', 'optin_auto_tweet_date'])
 
 def find_title(url):
     """
@@ -271,6 +280,74 @@ def iriToUri(iri):
         part.encode('idna') if parti == 1 else urlEncodeNonAscii(part.encode('utf-8'))
         for parti, part in enumerate(parts)
     )
+
+
+def f_optin(willie, trigger):
+    """ opt in to auto tweeting links posted. """
+    # prevent blocked users from accessing the trigger
+    if trigger.nick in willie.config.core.nick_blocks:
+        return
+
+    if not willie.db:
+        return
+
+    willie.db.preferences.update(Nick(trigger.nick), {
+        'optin_auto_tweet': 'yes', })
+    willie.db.preferences.update(Nick(trigger.nick), {
+        'optin_auto_tweet_date': str(datetime.datetime.today()), })
+
+    willie.say('{nick}: You are now opted in to auto-tweet links you post to @nashdevbot. Thx!'.format(nick=Nick(trigger.nick)))
+f_optin.commands = ['optin']
+f_optin.priority = 'medium'
+f_optin.example = '.optin'
+
+
+def f_optin_check(willie, trigger):
+    """ check to see if i've opted in. """
+    if not willie.db:
+        return
+
+    nick = Nick(trigger.nick)
+
+    if optin_check(willie, nick):
+        willie.say('{nick}: You opted in to auto-tweet links on {date}'.format(
+            nick=nick,
+            date=willie.db.preferences.get(nick, 'optin_auto_tweet_date')))
+    else:
+        willie.say('{nick}: Does not appear you have optin in to auto-tweet links.'.format(nick=nick))
+f_optin_check.commands = ['checkoptin']
+f_optin_check.priority = 'medium'
+f_optin_check.example = '.checkoptin'
+
+
+def f_optout(willie, trigger):
+    """ check to see if i've opted in. """
+    nick = Nick(trigger.nick)
+
+    if not optin_check(willie, Nick(trigger.nick)):
+        willie.say('{nick}: You have not opted in, ignoring you.'.format(nick=nick))
+        return
+
+    willie.db.preferences.update(nick, { 'optin_auto_tweet': '', 'optin_auto_tweet_date': str(datetime.datetime.today()) })
+    willie.say('{nick}: You have opted out, ignoring you.'.format(nick=nick))
+    return
+f_optout.commands = ['optout']
+f_optout.priority = 'medium'
+
+def optin_check(willie, nick):
+    if not willie.db:
+        return False
+
+    if nick not in willie.db.preferences:
+        return False
+
+    try:
+        if willie.db.preferences.get(nick, 'optin_auto_tweet') == "yes":
+            return True
+    except KeyError:
+        pass
+
+    return False
 
 if __name__ == '__main__':
     print __doc__.strip()
