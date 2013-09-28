@@ -14,7 +14,6 @@ Current channels that this bot sits on:
  #pynash
  #nashjs
  #hacknashville
- #nashvillephp
  #nashdl
  #nashfp
  #nashsoftwareschool
