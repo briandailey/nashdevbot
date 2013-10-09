@@ -17,4 +17,4 @@ Current channels that this bot sits on:
  #nashdl
  #nashfp
  #nashsoftwareschool
-```
+`#nashvillevim
